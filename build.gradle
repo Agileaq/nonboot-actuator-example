@@ -1,0 +1,55 @@
+group 'arc.example'
+version '1.0.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'war'
+apply plugin: 'idea'
+apply plugin: 'eclipse'
+apply plugin: 'maven-publish'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'propdeps'
+apply plugin: 'propdeps-maven'
+apply plugin: 'propdeps-idea'
+apply plugin: 'propdeps-eclipse'
+apply plugin: "io.spring.dependency-management"
+
+sourceCompatibility = 1.8
+
+repositories {
+    jcenter()
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+        maven { url 'http://repo.spring.io/plugins-release' }
+    }
+    dependencies {
+		classpath 'io.spring.gradle:dependency-management-plugin:0.6.0.RELEASE'
+        classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.7'
+    }
+}
+
+dependencyManagement {
+    imports {
+        mavenBom 'io.spring.platform:platform-bom:2.0.7.RELEASE'
+    }
+}
+
+dependencies {
+    compile('org.springframework.boot:spring-boot-actuator'){
+        exclude group: 'org.springframework.boot', module:'spring-boot-starter-logging'}
+    compile 'org.springframework:spring-webmvc'
+    compile 'org.apache.commons:commons-lang3'
+    compile 'com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider'
+    compile 'org.slf4j:jcl-over-slf4j'
+    provided 'javax.servlet:javax.servlet-api'
+    testCompile 'junit:junit'
+}
+
+war {
+    baseName = 'actuator'
+    archiveName = 'actuator.war'
+    destinationDir = file('build')
+}
